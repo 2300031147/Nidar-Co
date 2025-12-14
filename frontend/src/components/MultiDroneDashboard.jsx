@@ -140,7 +140,7 @@ const MultiDroneDashboard = () => {
                     type="number"
                     placeholder="MAVProxy Port"
                     value={newDrone.mavproxyPort}
-                    onChange={(e) => setNewDrone({ ...newDrone, mavproxyPort: parseInt(e.target.value) })}
+                    onChange={(e) => setNewDrone({ ...newDrone, mavproxyPort: parseInt(e.target.value) || 14550 })}
                     className="w-full p-2 mb-2 neo-input"
                   />
                   <button type="submit" className="neo-button bg-neo-green text-white w-full">

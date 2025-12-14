@@ -118,8 +118,11 @@ const MissionReplay = () => {
               <select
                 value={selectedMission?.id || ''}
                 onChange={(e) => {
-                  const mission = missions.find(m => m.id === parseInt(e.target.value));
-                  setSelectedMission(mission);
+                  const missionId = parseInt(e.target.value);
+                  if (!isNaN(missionId)) {
+                    const mission = missions.find(m => m.id === missionId);
+                    setSelectedMission(mission);
+                  }
                 }}
                 className="neo-input w-full mb-4"
               >

@@ -173,8 +173,11 @@ const GeofenceManager = () => {
                 <select
                   value={selectedMission?.id || ''}
                   onChange={(e) => {
-                    const mission = missions.find(m => m.id === parseInt(e.target.value));
-                    setSelectedMission(mission);
+                    const missionId = parseInt(e.target.value);
+                    if (!isNaN(missionId)) {
+                      const mission = missions.find(m => m.id === missionId);
+                      setSelectedMission(mission);
+                    }
                   }}
                   className="neo-input w-full"
                 >
@@ -235,7 +238,10 @@ const GeofenceManager = () => {
                     type="number"
                     placeholder="Min Altitude (m)"
                     value={newZone.minAltitude || ''}
-                    onChange={(e) => setNewZone({ ...newZone, minAltitude: e.target.value ? parseFloat(e.target.value) : null })}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value);
+                      setNewZone({ ...newZone, minAltitude: !isNaN(value) ? value : null });
+                    }}
                     className="w-full p-2 mb-2 neo-input"
                   />
 
@@ -243,7 +249,10 @@ const GeofenceManager = () => {
                     type="number"
                     placeholder="Max Altitude (m)"
                     value={newZone.maxAltitude || ''}
-                    onChange={(e) => setNewZone({ ...newZone, maxAltitude: e.target.value ? parseFloat(e.target.value) : null })}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value);
+                      setNewZone({ ...newZone, maxAltitude: !isNaN(value) ? value : null });
+                    }}
                     className="w-full p-2 mb-2 neo-input"
                   />
 

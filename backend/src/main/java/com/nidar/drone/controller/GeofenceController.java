@@ -72,12 +72,31 @@ public class GeofenceController {
     
     @PostMapping("/validate")
     public ResponseEntity<Map<String, Object>> validatePosition(@RequestBody Map<String, Object> request) {
-        Double latitude = ((Number) request.get("latitude")).doubleValue();
-        Double longitude = ((Number) request.get("longitude")).doubleValue();
-        Double altitude = ((Number) request.get("altitude")).doubleValue();
-        Long missionId = ((Number) request.get("missionId")).longValue();
-        
-        Map<String, Object> result = geofenceService.validatePosition(latitude, longitude, altitude, missionId);
-        return ResponseEntity.ok(result);
+        try {
+            Double latitude = request.get("latitude") != null ? 
+                ((Number) request.get("latitude")).doubleValue() : null;
+            Double longitude = request.get("longitude") != null ? 
+                ((Number) request.get("longitude")).doubleValue() : null;
+            Double altitude = request.get("altitude") != null ? 
+                ((Number) request.get("altitude")).doubleValue() : null;
+            Long missionId = request.get("missionId") != null ? 
+                ((Number) request.get("missionId")).longValue() : null;
+            
+            if (latitude == null || longitude == null || altitude == null || missionId == null) {
+                Map<String, Object> error = new HashMap<>();
+                error.put("valid", false);
+                error.put("message", "Missing required parameters");
+                return ResponseEntity.badRequest().body(error);
+            }
+            
+            Map<String, Object> result = geofenceService.validatePosition(latitude, longitude, altitude, missionId);
+            return ResponseEntity.ok(result);
+        } catch (ClassCastException e) {
+            log.error("Invalid parameter types", e);
+            Map<String, Object> error = new HashMap<>();
+            error.put("valid", false);
+            error.put("message", "Invalid parameter types");
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 }
