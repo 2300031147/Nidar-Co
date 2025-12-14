@@ -104,7 +104,7 @@ const MissionReplay = () => {
   };
 
   return (
-    <section id="replay" className="py-20 px-4 bg-neo-purple">
+    <section className="min-h-[calc(100vh-88px)] py-20 px-4 bg-neo-purple overflow-y-auto">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-5xl font-black mb-12 text-center neo-text-shadow">
           🎬 MISSION REPLAY & ANALYTICS

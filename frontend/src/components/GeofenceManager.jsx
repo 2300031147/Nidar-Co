@@ -158,7 +158,7 @@ const GeofenceManager = () => {
   };
 
   return (
-    <section id="geofence" className="py-20 px-4 bg-neo-green">
+    <section className="min-h-[calc(100vh-88px)] py-20 px-4 bg-neo-green overflow-y-auto">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-5xl font-black mb-12 text-center neo-text-shadow">
           🚧 GEOFENCE MANAGER
