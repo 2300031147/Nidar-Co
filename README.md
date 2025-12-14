@@ -99,7 +99,7 @@ Nidar-Co/
 3. **Access the application**
    - Frontend: http://localhost
    - Backend API: http://localhost:8080
-   - MySQL: localhost:3306
+   - MySQL: localhost:3307
 
 ### Local Development Setup
 
@@ -127,7 +127,7 @@ docker run -d \
   -e MYSQL_USER=drone_user \
   -e MYSQL_PASSWORD=drone_password \
   -e MYSQL_ROOT_PASSWORD=root_password \
-  -p 3306:3306 \
+  -p 3307:3306 \
   mysql:8.0
 ```
 
