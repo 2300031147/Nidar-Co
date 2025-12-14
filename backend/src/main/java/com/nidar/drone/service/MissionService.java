@@ -64,14 +64,15 @@ public class MissionService {
             throw new RuntimeException("Not connected to drone");
         }
         
-        boolean success = mavProxyService.uploadMission(mission.getWaypoints());
+        // Upload complete mission including waypoints, geofence, and rally points
+        boolean success = mavProxyService.uploadCompleteMission(mission);
         
         if (success) {
             mission.setStatus("DEPLOYED");
             mission.setDeployedAt(LocalDateTime.now());
             return missionRepository.save(mission);
         } else {
-            throw new RuntimeException("Failed to deploy mission");
+            throw new RuntimeException("Failed to deploy mission to Mission Planner/QGC");
         }
     }
     

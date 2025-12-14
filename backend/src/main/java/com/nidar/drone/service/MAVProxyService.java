@@ -1,7 +1,6 @@
 package com.nidar.drone.service;
 
-import com.nidar.drone.model.Telemetry;
-import com.nidar.drone.model.Waypoint;
+import com.nidar.drone.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -9,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.net.Socket;
+import java.net.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -26,13 +25,19 @@ public class MAVProxyService {
     
     private final SimpMessagingTemplate messagingTemplate;
     private final TelemetryService telemetryService;
-    private Socket socket;
+    private final MAVLinkMessageService mavLinkMessageService;
+    
+    private DatagramSocket udpSocket;
+    private InetAddress mavproxyAddress;
     private boolean connected = false;
     private Random random = new Random();
     
-    public MAVProxyService(SimpMessagingTemplate messagingTemplate, TelemetryService telemetryService) {
+    public MAVProxyService(SimpMessagingTemplate messagingTemplate, 
+                          TelemetryService telemetryService,
+                          MAVLinkMessageService mavLinkMessageService) {
         this.messagingTemplate = messagingTemplate;
         this.telemetryService = telemetryService;
+        this.mavLinkMessageService = mavLinkMessageService;
     }
     
     public boolean connect() {
@@ -52,12 +57,12 @@ public class MAVProxyService {
     
     public void disconnect() {
         try {
-            if (socket != null && !socket.isClosed()) {
-                socket.close();
+            if (udpSocket != null && !udpSocket.isClosed()) {
+                udpSocket.close();
             }
             connected = false;
             log.info("Disconnected from MAVProxy");
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Error disconnecting from MAVProxy", e);
         }
     }
@@ -103,18 +108,143 @@ public class MAVProxyService {
         }
         
         try {
-            // In a real implementation, this would send mission commands to MAVProxy
-            log.info("Uploading mission with {} waypoints", waypoints.size());
+            log.info("Uploading mission with {} waypoints to Mission Planner/QGC", waypoints.size());
             
-            for (Waypoint wp : waypoints) {
-                log.info("Waypoint {}: lat={}, lon={}, alt={}", 
-                    wp.getSequence(), wp.getLatitude(), wp.getLongitude(), wp.getAltitude());
+            // Step 1: Send mission count
+            if (!mavLinkMessageService.sendMissionCount(udpSocket, mavproxyAddress, mavproxyPort, waypoints.size())) {
+                throw new RuntimeException("Failed to send mission count");
             }
             
-            log.info("Mission uploaded successfully");
+            // Small delay between messages
+            Thread.sleep(100);
+            
+            // Step 2: Send each waypoint
+            for (int i = 0; i < waypoints.size(); i++) {
+                Waypoint wp = waypoints.get(i);
+                log.info("Sending waypoint {}: lat={}, lon={}, alt={}", 
+                    i, wp.getLatitude(), wp.getLongitude(), wp.getAltitude());
+                
+                if (!mavLinkMessageService.sendMissionItem(udpSocket, mavproxyAddress, mavproxyPort, wp, i)) {
+                    throw new RuntimeException("Failed to send waypoint " + i);
+                }
+                
+                // Small delay between waypoints
+                Thread.sleep(50);
+            }
+            
+            log.info("Mission uploaded successfully to Mission Planner/QGC");
             return true;
         } catch (Exception e) {
             log.error("Failed to upload mission", e);
+            return false;
+        }
+    }
+    
+    /**
+     * Upload complete mission including waypoints, geofence, and rally points
+     */
+    public boolean uploadCompleteMission(Mission mission) {
+        if (!connected) {
+            log.error("Cannot upload mission: Not connected to MAVProxy");
+            return false;
+        }
+        
+        try {
+            log.info("Uploading complete mission '{}' to Mission Planner/QGC", mission.getName());
+            
+            // Upload waypoints
+            if (mission.getWaypoints() != null && !mission.getWaypoints().isEmpty()) {
+                if (!uploadMission(mission.getWaypoints())) {
+                    return false;
+                }
+            }
+            
+            // Upload geofence points
+            if (mission.getGeofenceEnabled() && mission.getGeofencePoints() != null && 
+                !mission.getGeofencePoints().isEmpty()) {
+                uploadGeofence(mission.getGeofencePoints());
+            }
+            
+            // Upload rally points
+            if (mission.getRallyPoints() != null && !mission.getRallyPoints().isEmpty()) {
+                uploadRallyPoints(mission.getRallyPoints());
+            }
+            
+            log.info("Complete mission uploaded to Mission Planner/QGC");
+            return true;
+        } catch (Exception e) {
+            log.error("Failed to upload complete mission", e);
+            return false;
+        }
+    }
+    
+    /**
+     * Upload geofence points to Mission Planner/QGC
+     */
+    public boolean uploadGeofence(List<GeofencePoint> points) {
+        try {
+            log.info("Uploading {} geofence points to Mission Planner/QGC", points.size());
+            
+            for (int i = 0; i < points.size(); i++) {
+                GeofencePoint point = points.get(i);
+                mavLinkMessageService.sendGeofencePoint(udpSocket, mavproxyAddress, mavproxyPort, 
+                    point, i, points.size());
+                Thread.sleep(50);
+            }
+            
+            log.info("Geofence uploaded successfully");
+            return true;
+        } catch (Exception e) {
+            log.error("Failed to upload geofence", e);
+            return false;
+        }
+    }
+    
+    /**
+     * Upload rally points to Mission Planner/QGC
+     */
+    public boolean uploadRallyPoints(List<RallyPoint> points) {
+        try {
+            log.info("Uploading {} rally points to Mission Planner/QGC", points.size());
+            
+            for (int i = 0; i < points.size(); i++) {
+                RallyPoint point = points.get(i);
+                mavLinkMessageService.sendRallyPoint(udpSocket, mavproxyAddress, mavproxyPort, 
+                    point, i, points.size());
+                Thread.sleep(50);
+            }
+            
+            log.info("Rally points uploaded successfully");
+            return true;
+        } catch (Exception e) {
+            log.error("Failed to upload rally points", e);
+            return false;
+        }
+    }
+    
+    /**
+     * Upload vehicle parameters to Mission Planner/QGC
+     */
+    public boolean uploadParameters(List<VehicleParameter> parameters) {
+        if (!connected) {
+            log.error("Cannot upload parameters: Not connected to MAVProxy");
+            return false;
+        }
+        
+        try {
+            log.info("Uploading {} parameters to Mission Planner/QGC", parameters.size());
+            
+            for (VehicleParameter param : parameters) {
+                float value = Float.parseFloat(param.getParameterValue());
+                mavLinkMessageService.sendParameter(udpSocket, mavproxyAddress, mavproxyPort, 
+                    param.getParameterName(), value);
+                Thread.sleep(50);
+            }
+            
+            log.info("Parameters uploaded successfully to Mission Planner/QGC");
+            return true;
+        } catch (Exception e) {
+            log.error("Failed to upload parameters", e);
             return false;
         }
     }
