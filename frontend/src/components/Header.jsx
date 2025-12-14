@@ -24,10 +24,10 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            {['About', 'Services', 'Portfolio', 'Dashboard'].map((item) => (
+            {['About', 'Services', 'Portfolio', 'Dashboard', 'Multi-Drone', 'Geofence', 'Replay'].map((item) => (
               <button
                 key={item}
-                onClick={() => scrollToSection(item.toLowerCase())}
+                onClick={() => scrollToSection(item.toLowerCase().replace('-', ''))}
                 className="neo-border px-6 py-2 bg-neo-blue text-neo-black font-bold hover:bg-neo-green hover:-translate-y-1 shadow-brutal-sm hover:shadow-brutal transition-all duration-300"
               >
                 {item}
@@ -51,10 +51,10 @@ const Header = () => {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden mt-4 pb-4 space-y-3">
-            {['About', 'Services', 'Portfolio', 'Dashboard'].map((item) => (
+            {['About', 'Services', 'Portfolio', 'Dashboard', 'Multi-Drone', 'Geofence', 'Replay'].map((item) => (
               <button
                 key={item}
-                onClick={() => scrollToSection(item.toLowerCase())}
+                onClick={() => scrollToSection(item.toLowerCase().replace('-', ''))}
                 className="w-full neo-border px-6 py-3 bg-neo-blue text-neo-black font-bold hover:bg-neo-green shadow-brutal-sm block"
               >
                 {item}

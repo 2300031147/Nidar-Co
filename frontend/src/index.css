@@ -39,3 +39,94 @@ body {
 .shadow-brutal-lg {
   box-shadow: 12px 12px 0px 0px #000000;
 }
+
+.neo-brutal-card {
+  border: 4px solid black;
+  box-shadow: 8px 8px 0px 0px #000000;
+}
+
+.neo-brutal-border {
+  border: 4px solid black;
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.neo-button {
+  border: 4px solid black;
+  box-shadow: 4px 4px 0px 0px #000000;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.neo-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0px 0px #000000;
+}
+
+.neo-button:active {
+  transform: translateY(2px);
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+
+.neo-input {
+  border: 4px solid black;
+  padding: 0.5rem;
+  background-color: white;
+}
+
+.neo-input:focus {
+  outline: none;
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.neo-text-shadow {
+  text-shadow: 4px 4px 0px rgba(0, 0, 0, 1);
+}
+
+/* Neobrutalist colors */
+.neo-yellow {
+  background-color: #FFD700;
+}
+
+.neo-pink {
+  background-color: #FF1493;
+}
+
+.neo-blue {
+  background-color: #00BFFF;
+}
+
+.neo-green {
+  background-color: #00FF7F;
+}
+
+.neo-orange {
+  background-color: #FF8C00;
+}
+
+.neo-purple {
+  background-color: #9370DB;
+}
+
+.neo-white {
+  background-color: #FFFFFF;
+}
+
+.neo-black {
+  color: #000000;
+}
+
+.neo-gray {
+  background-color: #808080;
+}
+
+/* Leaflet map adjustments */
+.leaflet-container {
+  font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+  border: 3px solid black;
+  box-shadow: 4px 4px 0px 0px #000000;
+  border-radius: 0;
+}

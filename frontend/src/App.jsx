@@ -4,6 +4,9 @@ import About from './components/About';
 import Services from './components/Services';
 import Portfolio from './components/Portfolio';
 import Dashboard from './components/Dashboard';
+import MultiDroneDashboard from './components/MultiDroneDashboard';
+import GeofenceManager from './components/GeofenceManager';
+import MissionReplay from './components/MissionReplay';
 
 function App() {
   return (
@@ -14,6 +17,9 @@ function App() {
       <Services />
       <Portfolio />
       <Dashboard />
+      <MultiDroneDashboard />
+      <GeofenceManager />
+      <MissionReplay />
     </div>
   );
 }

@@ -23,4 +23,8 @@ public class GeofencePoint {
     @ManyToOne
     @JoinColumn(name = "mission_id")
     private Mission mission;
+    
+    @ManyToOne
+    @JoinColumn(name = "zone_id")
+    private GeofenceZone zone;
 }
