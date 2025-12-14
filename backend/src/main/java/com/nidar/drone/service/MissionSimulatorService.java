@@ -181,6 +181,19 @@ public class MissionSimulatorService {
     
     /**
      * Calculate estimated battery usage
+     * 
+     * SIMPLIFIED MODEL - Assumptions:
+     * - 20 minutes max flight time = 100% battery (typical for consumer drones)
+     * - 20% overhead for altitude changes and wind resistance
+     * - Linear discharge rate (real batteries have non-linear curves)
+     * - Does not account for: payload weight, temperature, battery age, wind, aggressive maneuvers
+     * 
+     * For production use, consider:
+     * - Drone-specific battery models
+     * - Environmental factors (temperature, wind)
+     * - Battery health/age factor
+     * - Non-linear discharge curves
+     * - Configurable parameters per drone type
      */
     private void calculateBatteryUsage(SimulationResult result) {
         // Simplified battery model

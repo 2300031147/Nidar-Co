@@ -15,6 +15,18 @@ import java.util.List;
 
 /**
  * Service for creating and sending MAVLink messages to Mission Planner/QGC
+ * 
+ * IMPORTANT PRODUCTION NOTE:
+ * This implementation uses simplified CRC (value 0) for demonstration purposes.
+ * For production use with real Mission Planner/QGC, you MUST:
+ * 
+ * 1. Implement proper CRC-16-CCITT calculation for each message type
+ * 2. Include the CRC_EXTRA byte specific to each message ID
+ * 3. Use a proper MAVLink library (e.g., mavlink-java) for production
+ * 
+ * Without proper CRC, Mission Planner/QGC will reject messages as corrupted.
+ * The current implementation is suitable for testing the message structure
+ * and understanding the MAVLink protocol flow.
  */
 @Service
 @Slf4j

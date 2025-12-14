@@ -71,18 +71,28 @@ public class MAVProxyService {
         return connected;
     }
     
+    /**
+     * Update telemetry data every second
+     * NOTE: Currently uses simulated data for testing without hardware.
+     * 
+     * To use real MAVProxy data:
+     * 1. Create a separate thread to listen on UDP socket
+     * 2. Parse incoming MAVLink messages (GLOBAL_POSITION_INT, ATTITUDE, VFR_HUD, etc.)
+     * 3. Update telemetry object with parsed values
+     * 4. Replace generateSimulatedTelemetry() call with real data
+     */
     @Scheduled(fixedRate = 1000) // Update every second
     public void updateTelemetry() {
         if (!connected) {
             return;
         }
         
-        // In a real implementation, this would read from MAVProxy
-        // For now, we'll simulate telemetry data
+        // SIMULATION MODE: Generate fake telemetry for testing
+        // In production with real MAVProxy, this would parse actual MAVLink messages
         Telemetry telemetry = generateSimulatedTelemetry();
         telemetryService.saveTelemetry(telemetry);
         
-        // Send telemetry via WebSocket
+        // Send telemetry via WebSocket to frontend
         messagingTemplate.convertAndSend("/topic/telemetry", telemetry);
     }
     
