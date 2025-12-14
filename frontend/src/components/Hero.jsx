@@ -9,7 +9,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className="h-[calc(100vh-88px)] flex items-center justify-center bg-gradient-to-br from-neo-purple via-neo-pink to-neo-orange">
+    <section className="h-[calc(100vh-88px)] flex items-center justify-center" style={{ background: 'linear-gradient(to bottom right, #9370DB, #FF1493, #FF8C00)' }}>
       <div className="container mx-auto px-4 py-20">
         <div className={`text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           {/* Main Title */}

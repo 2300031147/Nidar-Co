@@ -99,7 +99,7 @@ const Dashboard = () => {
   };
 
   return (
-    <section className="min-h-[calc(100vh-88px)] bg-gradient-to-br from-neo-purple to-neo-blue py-20 overflow-y-auto">
+    <section className="min-h-[calc(100vh-88px)] py-20 overflow-y-auto" style={{ background: 'linear-gradient(to bottom right, #9370DB, #00BFFF)' }}>
       <div className="container mx-auto px-4">
         {/* Section Title */}
         <div className={`text-center mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
