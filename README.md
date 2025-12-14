@@ -22,6 +22,29 @@ A comprehensive full-stack web application for autonomous drone mission planning
 - **Flight Controls**: Arm, Takeoff, Land, Emergency Stop
 - **MAVLink Integration**: Direct communication with ArduPilot/QGC via MAVProxy
 
+### Multi-Drone Dashboard
+- **Fleet Management**: Register and manage multiple drones
+- **Live Tracking**: Real-time position monitoring on interactive map
+- **Status Monitoring**: Connection status, battery levels, and flight modes
+- **Individual Control**: Select and control specific drones
+
+### Advanced Geofencing
+- **Multiple Zones**: Create inclusion and exclusion zones
+- **Altitude Constraints**: Set min/max altitude limits per zone
+- **Visual Editor**: Draw zones with multiple points on map
+- **Violation Actions**: Configure actions (warn, RTL, land, brake)
+- **Real-time Validation**: Check drone position against active zones
+
+### Mission Replay & Analytics
+- **Telemetry Playback**: Replay missions with timeline controls
+- **Speed Control**: Adjust playback speed from 0.5x to 5x
+- **Path Visualization**: See complete flight path on map
+- **Statistics Dashboard**: Analyze mission performance
+  - Total distance traveled
+  - Max altitude and speed
+  - Battery consumption
+  - Flight duration
+
 ## 🛠️ Technology Stack
 
 ### Frontend
@@ -29,6 +52,8 @@ A comprehensive full-stack web application for autonomous drone mission planning
 - **Tailwind CSS** (Neobrutalist design system)
 - **Axios** for API calls
 - **React Router** for navigation
+- **Leaflet.js** for interactive maps
+- **React-Leaflet** for map components
 - Responsive design with smooth animations
 
 ### Backend
@@ -169,12 +194,35 @@ The system receives and displays:
 - `GET /api/drone/telemetry/latest` - Get latest telemetry
 - `POST /api/drone/command/{command}` - Send command to drone
 
+### Drone Management (Multi-Drone)
+- `GET /api/drones` - Get all registered drones
+- `GET /api/drones/{id}` - Get drone by ID
+- `POST /api/drones` - Register new drone
+- `PUT /api/drones/{id}` - Update drone information
+- `DELETE /api/drones/{id}` - Delete drone
+- `GET /api/drones/connected` - Get connected drones
+- `POST /api/drones/{id}/position` - Update drone position
+- `POST /api/drones/{id}/status` - Update drone status
+
 ### Mission Management
 - `POST /api/mission` - Create new mission
 - `GET /api/mission` - Get all missions
 - `GET /api/mission/{id}` - Get mission by ID
 - `POST /api/mission/{id}/deploy` - Deploy mission to drone
 - `POST /api/mission/upload` - Upload mission XML file
+
+### Geofencing
+- `GET /api/geofence` - Get all geofence zones
+- `GET /api/geofence/{id}` - Get zone by ID
+- `GET /api/geofence/mission/{missionId}` - Get zones for mission
+- `POST /api/geofence` - Create new geofence zone
+- `PUT /api/geofence/{id}` - Update geofence zone
+- `DELETE /api/geofence/{id}` - Delete geofence zone
+- `POST /api/geofence/validate` - Validate position against zones
+
+### Mission Replay
+- `GET /api/replay/mission/{missionId}` - Get mission replay data with analytics
+- `GET /api/replay/telemetry/{missionId}` - Get telemetry data for mission
 
 ### WebSocket
 - `ws://localhost:8080/ws` - Real-time telemetry updates
@@ -237,15 +285,20 @@ cd backend
 mvn test
 ```
 
+## 📈 New Features
+
+- [x] **Map visualization with real-time drone position** - Interactive Leaflet map showing live drone locations
+- [x] **Multi-drone support** - Manage and monitor multiple drones simultaneously
+- [x] **Advanced geofencing tools** - Create inclusion/exclusion zones with altitude constraints
+- [x] **Mission replay and analytics** - Review completed missions with telemetry playback and statistics
+
 ## 📈 Future Enhancements
 
-- [ ] Map visualization with real-time drone position
 - [ ] Video streaming from drone camera
-- [ ] Multi-drone support
-- [ ] Advanced geofencing tools
-- [ ] Mission replay and analytics
 - [ ] User authentication and roles
 - [ ] Mobile app companion
+- [ ] 3D mission visualization
+- [ ] AI-powered mission optimization
 
 ## 🤝 Contributing
 
