@@ -28,6 +28,14 @@ public class Telemetry {
     private Boolean armed;
     private LocalDateTime timestamp;
     
+    @ManyToOne
+    @JoinColumn(name = "drone_id")
+    private Drone drone;
+    
+    @ManyToOne
+    @JoinColumn(name = "mission_id")
+    private Mission mission;
+    
     @PrePersist
     protected void onCreate() {
         timestamp = LocalDateTime.now();
